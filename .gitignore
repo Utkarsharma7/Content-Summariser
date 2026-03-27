@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+storage_state.json
+
+# Packaged extension zip (build artifact)
+notebooklm-pdf-summariser.zip
+
+# NotebookLM local auth
+.notebooklm/
+
+# Temp files
+*.tmp
+*.log

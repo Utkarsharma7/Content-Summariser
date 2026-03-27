@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+extension/
+.git/
+.env
+*.md
+API/notebooklm-py/.git/
+API/notebooklm-py/tests/
+API/notebooklm-py/.venv/

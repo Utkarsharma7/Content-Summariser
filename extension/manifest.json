@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "NotebookLM PDF Summariser",
+  "version": "1.0.0",
+  "description": "Summarise any PDF with Google NotebookLM — generate reports, slide decks, podcasts, quizzes, or chat with your documents.",
+  "permissions": [
+    "cookies",
+    "tabs",
+    "activeTab",
+    "downloads",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*.google.com/*"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "PDF Summariser",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  }
+}

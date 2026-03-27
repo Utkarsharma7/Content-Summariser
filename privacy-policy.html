@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy Policy — NotebookLM PDF Summariser</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #222;
+      line-height: 1.7;
+    }
+    h1 { font-size: 24px; margin-bottom: 4px; }
+    h2 { font-size: 18px; margin-top: 28px; }
+    .updated { color: #666; font-size: 14px; margin-bottom: 24px; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p class="updated">NotebookLM PDF Summariser &mdash; Last updated: March 27, 2026</p>
+
+  <h2>What This Extension Does</h2>
+  <p>
+    NotebookLM PDF Summariser is a Chrome extension that detects PDF files open in
+    your browser and lets you generate summaries, presentations, podcasts, quizzes,
+    or chat conversations from them using Google NotebookLM.
+  </p>
+
+  <h2>Data We Access</h2>
+  <ul>
+    <li><strong>PDF content:</strong> When you choose to summarise a PDF, the extension
+      reads the PDF from the active tab and sends it to a backend API server for processing.</li>
+    <li><strong>Tab URLs:</strong> The extension reads the URL of your active tab to
+      detect whether it contains a PDF.</li>
+    <li><strong>Google cookies:</strong> The extension reads your Google session cookies
+      (via <code>chrome.cookies</code> API for the <code>.google.com</code> domain)
+      to authenticate with Google NotebookLM on your behalf. These cookies are sent to
+      the backend API server with each request so it can make NotebookLM API calls
+      using your Google account. Cookies are not stored on the server — they are only
+      held in memory for the duration of your active session.</li>
+    <li><strong>Extension settings:</strong> Your preferences (auto-detect toggle,
+      backend API URL) are stored locally in <code>chrome.storage.sync</code>.</li>
+  </ul>
+
+  <h2>Where Your Data Goes</h2>
+  <ul>
+    <li>PDF files are sent to the backend API server whose URL is configured in the
+      extension settings. By default this is a server you operate yourself.</li>
+    <li>The backend server forwards PDFs to Google NotebookLM for processing.
+      Google's own <a href="https://policies.google.com/privacy">privacy policy</a> applies
+      to data processed by NotebookLM.</li>
+    <li>Generated output files (reports, slides, audio, quizzes) are downloaded
+      directly to your computer.</li>
+  </ul>
+
+  <h2>Data Storage &amp; Retention</h2>
+  <ul>
+    <li>The extension does <strong>not</strong> store any PDF content, summaries,
+      or personal data persistently.</li>
+    <li>PDF files and generated artifacts are held in temporary memory on the backend
+      server only for the duration of processing, then deleted automatically.</li>
+    <li>No analytics, tracking, or telemetry data is collected by the extension.</li>
+  </ul>
+
+  <h2>Third-Party Services</h2>
+  <ul>
+    <li><strong>Google NotebookLM:</strong> Used for AI-powered content generation.
+      Subject to Google's Terms of Service and Privacy Policy.</li>
+  </ul>
+
+  <h2>Permissions Explained</h2>
+  <ul>
+    <li><strong>tabs / activeTab:</strong> To detect PDF tabs and inject the chooser UI.</li>
+    <li><strong>scripting:</strong> To display in-page toast notifications, the output
+      chooser modal, and the chat widget.</li>
+    <li><strong>downloads:</strong> To save generated files to your computer.</li>
+    <li><strong>storage:</strong> To save your extension preferences.</li>
+    <li><strong>cookies:</strong> To read Google session cookies for NotebookLM authentication.</li>
+    <li><strong>Host permission (*.google.com):</strong> Required to read Google cookies
+      for authentication.</li>
+    <li><strong>Host permissions (optional):</strong> Requested when you enable
+      auto-detect, so the extension can read PDFs from any website.</li>
+  </ul>
+
+  <h2>Your Choices</h2>
+  <ul>
+    <li>You can disable auto-detection at any time from the extension popup.</li>
+    <li>You can revoke optional host permissions from <code>chrome://extensions</code>.</li>
+    <li>You control which backend server your data is sent to.</li>
+  </ul>
+
+  <h2>Changes to This Policy</h2>
+  <p>
+    If this policy is updated, the new version will be published at this same URL.
+    Continued use of the extension after changes constitutes acceptance.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    For questions about this privacy policy, open an issue on the project's GitHub repository.
+  </p>
+</body>
+</html>

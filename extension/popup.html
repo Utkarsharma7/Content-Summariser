@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PDF Summariser</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        padding: 18px 20px;
+        min-width: 320px;
+        background: #f8f9fa;
+        color: #222;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .header img { width: 28px; height: 28px; border-radius: 6px; }
+      .header h1 { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+
+      .auth-box {
+        background: #fff;
+        border: 1.5px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+      }
+      .auth-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .auth-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .status-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #ccc;
+        flex-shrink: 0;
+      }
+      .status-dot.ok { background: #0f9d58; }
+      .status-dot.err { background: #db4437; }
+
+      .btn-login {
+        padding: 7px 14px;
+        border: 1.5px solid #4285f4;
+        border-radius: 8px;
+        background: transparent;
+        color: #4285f4;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .btn-login:hover { background: #4285f4; color: #fff; }
+
+      .auth-hint {
+        font-size: 11px;
+        color: #888;
+        margin-top: 8px;
+        line-height: 1.4;
+      }
+
+      .btn-primary {
+        width: 100%;
+        padding: 12px 16px;
+        border: none;
+        border-radius: 10px;
+        background: #4285f4;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.15s;
+        margin-bottom: 14px;
+      }
+      .btn-primary:hover { background: #3367d6; }
+      .btn-primary:disabled {
+        background: #ccc;
+        cursor: default;
+      }
+
+      .divider {
+        border: none;
+        border-top: 1px solid #e0e0e0;
+        margin: 14px 0;
+      }
+
+      .setting-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 6px 0;
+      }
+      .setting-row label { font-size: 13px; font-weight: 500; }
+      .toggle {
+        position: relative;
+        width: 40px;
+        height: 22px;
+      }
+      .toggle input { opacity: 0; width: 0; height: 0; }
+      .slider {
+        position: absolute;
+        inset: 0;
+        background: #ccc;
+        border-radius: 22px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .slider::before {
+        content: "";
+        position: absolute;
+        width: 16px; height: 16px;
+        left: 3px; bottom: 3px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.2s;
+      }
+      .toggle input:checked + .slider { background: #4285f4; }
+      .toggle input:checked + .slider::before { transform: translateX(18px); }
+
+      .section-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
+        margin-bottom: 6px;
+        margin-top: 4px;
+      }
+      .api-input {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1.5px solid #ddd;
+        border-radius: 8px;
+        font-size: 12px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        outline: none;
+        transition: border 0.15s;
+        background: #fff;
+      }
+      .api-input:focus { border-color: #4285f4; }
+      .api-status {
+        font-size: 11px;
+        color: #888;
+        margin-top: 6px;
+        line-height: 1.4;
+      }
+      .api-status.ok { color: #0f9d58; }
+      .api-status.err { color: #db4437; }
+
+      .footer {
+        margin-top: 12px;
+        font-size: 10px;
+        color: #aaa;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="icon48.png" alt="icon" />
+      <h1>PDF Summariser</h1>
+    </div>
+
+    <!-- NotebookLM Auth -->
+    <div class="auth-box">
+      <div class="auth-row">
+        <div class="auth-status">
+          <span id="authDot" class="status-dot"></span>
+          <span id="authLabel">Checking login...</span>
+        </div>
+        <button id="loginBtn" class="btn-login" style="display:none">Login</button>
+      </div>
+      <div id="authHint" class="auth-hint" style="display:none"></div>
+    </div>
+
+    <button id="summariseBtn" class="btn-primary" disabled>
+      Open PDF Chooser
+    </button>
+    <div id="btnHint" style="font-size:11px;color:#888;text-align:center;margin-top:-8px;margin-bottom:12px">
+      Navigate to a PDF tab first
+    </div>
+
+    <hr class="divider" />
+
+    <div class="setting-row">
+      <label for="enabledToggle">Auto-detect PDFs</label>
+      <div class="toggle">
+        <input type="checkbox" id="enabledToggle" checked />
+        <span class="slider"></span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="section-label">Backend API URL</div>
+    <input type="url" id="apiUrlInput" class="api-input" placeholder="http://localhost:8000" />
+    <div id="apiStatus" class="api-status">Checking...</div>
+
+    <div class="footer">v1.0.0 &middot; Powered by NotebookLM</div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
