@@ -4,6 +4,7 @@ WORKDIR /app
 
 # 🔥 ADD THIS BLOCK
 RUN apt-get update && apt-get install -y \
+    git \
     gcc \
     libcairo2-dev \
     pkg-config \
