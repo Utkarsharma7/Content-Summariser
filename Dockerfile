@@ -13,9 +13,6 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY API/notebooklm-py /tmp/notebooklm-py
-RUN pip install --no-cache-dir /tmp/notebooklm-py && rm -rf /tmp/notebooklm-py
-
 COPY summariser_api.py .
 
 EXPOSE 8000

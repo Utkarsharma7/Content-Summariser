@@ -3,3 +3,4 @@ uvicorn[standard]>=0.32.0
 python-multipart>=0.0.9
 markdown>=3.6
 xhtml2pdf>=0.2.16
+git+https://github.com/haseeb-heaven/notebooklm-py.git
