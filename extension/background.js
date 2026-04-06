@@ -1,4 +1,4 @@
-const DEFAULT_API_URL = "http://localhost:8000";
+const DEFAULT_API_URL = "https://notebooklm-summariser-api.onrender.com";
 let API_BASE = DEFAULT_API_URL;
 
 async function loadApiBase() {
@@ -515,8 +515,17 @@ function stopKeepAlive() {
 async function checkServerHealth() {
   try {
     const api = await getApiBase();
-    const resp = await fetch(`${api}/health`, { signal: AbortSignal.timeout(4000) });
-    return resp.ok;
+    // Render free tier can cold-start; use a longer timeout and a couple retries.
+    for (let i = 0; i < 3; i++) {
+      try {
+        const resp = await fetch(`${api}/health`, { signal: AbortSignal.timeout(12000) });
+        if (resp.ok) return true;
+      } catch {
+        // ignore and retry
+      }
+      await new Promise((r) => setTimeout(r, 1000 * (i + 1)));
+    }
+    return false;
   } catch {
     return false;
   }

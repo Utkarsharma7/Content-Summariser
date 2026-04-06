@@ -1,4 +1,5 @@
-const DEFAULT_API_URL = "http://localhost:8000";
+const DEFAULT_API_URL = "https://notebooklm-summariser-api.onrender.com";
+const LEGACY_LOCALHOST_URL = "http://localhost:8000";
 
 const toggle = document.getElementById("enabledToggle");
 const apiInput = document.getElementById("apiUrlInput");
@@ -66,8 +67,16 @@ loginBtn.addEventListener("click", () => {
 // ---------------------------------------------------------------------------
 chrome.storage.sync.get({ enabled: true, apiUrl: DEFAULT_API_URL }, (data) => {
   toggle.checked = data.enabled;
-  apiInput.value = data.apiUrl;
-  checkHealth(data.apiUrl);
+
+  // Auto-migrate old installs that still have localhost saved.
+  const existing = (data.apiUrl || "").trim().replace(/\/+$/, "");
+  const migrated = (!existing || existing === LEGACY_LOCALHOST_URL) ? DEFAULT_API_URL : existing;
+  if (migrated !== existing) {
+    chrome.storage.sync.set({ apiUrl: migrated });
+  }
+
+  apiInput.value = migrated;
+  checkHealth(migrated);
 });
 
 toggle.addEventListener("change", async () => {
@@ -97,7 +106,7 @@ async function checkHealth(baseUrl) {
   apiStatus.textContent = "Checking...";
   apiStatus.className = "api-status";
   try {
-    const resp = await fetch(`${baseUrl}/health`, { signal: AbortSignal.timeout(4000) });
+    const resp = await fetch(`${baseUrl}/health`, { signal: AbortSignal.timeout(8000) });
     if (resp.ok) {
       apiStatus.textContent = "Connected";
       apiStatus.className = "api-status ok";
@@ -109,6 +118,30 @@ async function checkHealth(baseUrl) {
     apiStatus.textContent = "Cannot reach server";
     apiStatus.className = "api-status err";
   }
+}
+
+async function waitForHealthy(baseUrl, { maxWaitMs = 60000 } = {}) {
+  const started = Date.now();
+  let attempt = 0;
+  while (Date.now() - started < maxWaitMs) {
+    attempt++;
+    apiStatus.textContent = attempt === 1 ? "Waking server…" : `Waking server… (try ${attempt})`;
+    apiStatus.className = "api-status";
+    try {
+      const resp = await fetch(`${baseUrl}/health`, { signal: AbortSignal.timeout(12000) });
+      if (resp.ok) {
+        apiStatus.textContent = "Connected";
+        apiStatus.className = "api-status ok";
+        return true;
+      }
+    } catch {
+      // ignore
+    }
+    await new Promise((r) => setTimeout(r, Math.min(3000 + attempt * 250, 6000)));
+  }
+  apiStatus.textContent = "Cannot reach server";
+  apiStatus.className = "api-status err";
+  return false;
 }
 
 async function checkActiveTab() {
@@ -139,6 +172,21 @@ checkActiveTab();
 summariseBtn.addEventListener("click", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab || !tab.id) return;
-  chrome.runtime.sendMessage({ action: "openChooser", tabId: tab.id });
-  window.close();
+
+  const baseUrl = apiInput.value.trim().replace(/\/+$/, "");
+  if (!baseUrl) return;
+
+  const oldText = summariseBtn.textContent;
+  summariseBtn.disabled = true;
+  summariseBtn.textContent = "Connecting…";
+
+  const ok = await waitForHealthy(baseUrl, { maxWaitMs: 60000 });
+  if (ok) {
+    chrome.runtime.sendMessage({ action: "openChooser", tabId: tab.id });
+    window.close();
+    return;
+  }
+
+  summariseBtn.disabled = false;
+  summariseBtn.textContent = oldText;
 });
