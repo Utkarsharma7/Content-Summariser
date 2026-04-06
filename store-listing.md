@@ -79,5 +79,8 @@ Used to persist user preferences: auto-detect toggle state and backend API URL.
 ### Host permission (*://*.google.com/*)
 Required by the cookies API to read Google session cookies for NotebookLM authentication.
 
+### Host permission (https://notebooklm-summariser-api.onrender.com/*)
+Allows the extension to call the configured backend API (upload PDFs, generate outputs, chat) without browser CORS blocking. This is the default production API URL; users may change the API URL in settings if they self-host.
+
 ### Optional host permissions (https://*/* and http://*/*)
 Requested only when the user enables "Auto-detect PDFs." Allows the extension to detect and interact with PDFs on any website. Not granted by default — the user must explicitly opt in.

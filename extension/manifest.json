@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "NotebookLM PDF Summariser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Summarise any PDF with Google NotebookLM — generate reports, slide decks, podcasts, quizzes, or chat with your documents.",
   "permissions": [
     "cookies",
@@ -12,6 +12,7 @@
     "scripting"
   ],
   "host_permissions": [
+    "https://notebooklm-summariser-api.onrender.com/*",
     "*://*.google.com/*"
   ],
   "optional_host_permissions": [
